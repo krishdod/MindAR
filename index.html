@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>My AR Photo Cards</title>
+    <style>
+      html, body { margin: 0; padding: 0; height: 100%; background: #000; }
+      .overlay {
+        position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+        background: radial-gradient(ellipse at center, rgba(0,0,0,.9) 0%, rgba(0,0,0,.96) 100%);
+        color: #fff; z-index: 9999; flex-direction: column; gap: 12px; text-align: center; padding: 24px;
+      }
+      .overlay button {
+        appearance: none; border: none; background: #10b981; color: #000; font-weight: 700;
+        padding: 12px 18px; border-radius: 10px; cursor: pointer; font-size: 16px;
+      }
+      .hint { position: fixed; left: 12px; bottom: 12px; color: #fff; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; opacity: .85; }
+    </style>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+  </head>
+  <body>
+    <div id="overlay" class="overlay">
+      <div>
+        <h2 style="margin:0 0 6px">Tap to start</h2>
+        <p style="margin:0 0 16px">We need a user gesture to enable camera and audio on mobile.</p>
+        <button id="startBtn">Start AR</button>
+      </div>
+    </div>
+
+    <a-scene
+      mindar-image="imageTargetSrc: ./target.mind; uiError:no; uiLoading:no; uiScanning: yes"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: true"
+      embedded
+      renderer="colorManagement: true, physicallyCorrectLights: true"
+    >
+      <a-assets>
+        <video id="video" src="./video.mp4" preload="auto" crossorigin="anonymous" playsinline webkit-playsinline></video>
+        <audio id="bgm" src="./music.mp3" preload="auto" crossorigin="anonymous"></audio>
+      </a-assets>
+
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+      <!-- Single Target -->
+      <a-entity mindar-image-target="targetIndex: 0">
+        <a-video src="#video" width="1" height="0.5625" position="0 0 0" rotation="0 0 0"></a-video>
+      </a-entity>
+    </a-scene>
+
+    <div class="hint">Point your camera at your printed photo card</div>
+
+    <script>
+      // Handle mobile autoplay policies: require tap, then start camera, videos, and optional bgm
+      const overlay = document.getElementById('overlay');
+      const startBtn = document.getElementById('startBtn');
+      const videos = [document.getElementById('video')];
+      const bgm = document.getElementById('bgm');
+
+      function unmuteAndPrime(mediaEl) {
+        if (!mediaEl) return;
+        try {
+          mediaEl.muted = true; // allow autoplay
+          const playPromise = mediaEl.play();
+          if (playPromise && typeof playPromise.then === 'function') {
+            playPromise.then(() => {
+              mediaEl.pause();
+              mediaEl.currentTime = 0;
+            }).catch(() => {});
+          }
+        } catch(e) {}
+      }
+
+      startBtn.addEventListener('click', async () => {
+        overlay.style.display = 'none';
+        // prime videos
+        videos.forEach(unmuteAndPrime);
+        // start soft-audio
+        try {
+          if (bgm) {
+            bgm.volume = 0.35;
+            await bgm.play().catch(() => {});
+          }
+        } catch(e) {}
+      });
+
+      // Pause/Resume media based on target visibility
+      AFRAME.registerComponent('video-controller', {
+        schema: { target: { type: 'selector' } },
+        init() {
+          const targetVideo = this.data.target;
+          this.el.addEventListener('targetFound', () => {
+            if (targetVideo) { targetVideo.muted = false; targetVideo.play().catch(()=>{}); }
+          });
+          this.el.addEventListener('targetLost', () => {
+            if (targetVideo) { targetVideo.pause(); }
+          });
+        }
+      });
+
+      document.querySelectorAll('[mindar-image-target]').forEach((entity, idx) => {
+        entity.setAttribute('video-controller', { target: videos[idx] || null });
+      });
+    </script>
+  </body>
+  </html>
+
+

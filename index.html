@@ -16,8 +16,8 @@
         padding: 12px 18px; border-radius: 10px; cursor: pointer; font-size: 16px;
       }
       .hint { position: fixed; left: 12px; bottom: 12px; color: #fff; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; opacity: .85; }
-      /* Force-hide any VR UI if the browser injects it */
-      a-enter-vr { display: none !important; }
+      /* Force-hide any VR/AR UI if the browser injects it */
+      .a-enter-vr, .a-enter-ar, a-enter-vr, a-enter-ar { display: none !important; }
     </style>
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
@@ -86,6 +86,18 @@
             await bgm.play().catch(() => {});
           }
         } catch(e) {}
+      });
+
+      // Listen to MindAR system events for debugging
+      document.addEventListener('DOMContentLoaded', () => {
+        const sceneEl = document.querySelector('a-scene');
+        sceneEl.addEventListener('arReady', () => {
+          console.log('[MindAR] AR is ready (camera started).');
+        });
+        sceneEl.addEventListener('arError', (e) => {
+          console.error('[MindAR] AR error', e?.detail || e);
+          alert('Camera failed to start. Please allow camera permission, close apps using the camera, and retry.');
+        });
       });
 
       // Pause/Resume media based on target visibility

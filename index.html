@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Multi-Card AR Videos with MindAR and A-Frame</title>
+  <title>AR Photo Card</title>
 
   <style>
     html, body { margin: 0; padding: 0; height: 100%; background: #000; }
@@ -49,19 +49,14 @@
            renderer="colorManagement: true, physicallyCorrectLights: true">
 
     <a-assets>
-      <video id="video0" src="./video0.mp4" preload="auto" crossorigin="anonymous" playsinline webkit-playsinline muted loop></video>
-      <video id="video1" src="./video1.mp4" preload="auto" crossorigin="anonymous" playsinline webkit-playsinline muted loop></video>
+      <video id="video" src="./video.mp4" preload="auto" crossorigin="anonymous" playsinline webkit-playsinline muted loop></video>
       <audio id="bgm" src="./music.mp3" preload="auto" crossorigin="anonymous"></audio>
     </a-assets>
 
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
     <a-entity mindar-image-target="targetIndex: 0" id="target0">
-      <a-video src="#video0" width="1" height="0.5625" position="0 0 0" rotation="0 0 0"></a-video>
-    </a-entity>
-
-    <a-entity mindar-image-target="targetIndex: 1" id="target1">
-      <a-video src="#video1" width="1" height="0.5625" position="0 0 0" rotation="0 0 0"></a-video>
+      <a-video src="#video" width="1" height="0.5625" position="0 0 0" rotation="0 0 0"></a-video>
     </a-entity>
 
   </a-scene>
@@ -71,7 +66,7 @@
   <script>
     const overlay = document.getElementById('overlay');
     const startBtn = document.getElementById('startBtn');
-    const videos = [document.getElementById('video0'), document.getElementById('video1')];
+  const videos = [document.getElementById('video')];
     const bgm = document.getElementById('bgm');
 
     function unmuteAndPrime(mediaEl) {

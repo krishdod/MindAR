@@ -6,6 +6,13 @@
     <title>My AR Photo Cards</title>
     <style>
       html, body { margin: 0; padding: 0; height: 100%; background: #000; }
+      /* Ensure the AR scene and canvas fill the screen on mobile */
+      a-scene { position: fixed; inset: 0; width: 100vw; height: 100vh; }
+      canvas, .a-canvas { width: 100vw !important; height: 100vh !important; }
+      /* MindAR injects a camera <video>; make it cover */
+      video.mindar-video, video[playsinline][webkit-playsinline] {
+        position: fixed; inset: 0; width: 100vw; height: 100vh; object-fit: cover;
+      }
       .overlay {
         position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
         background: radial-gradient(ellipse at center, rgba(0,0,0,.9) 0%, rgba(0,0,0,.96) 100%);

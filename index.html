@@ -50,7 +50,6 @@
 
     <a-assets>
       <video id="video" src="./video.mp4" preload="auto" crossorigin="anonymous" playsinline webkit-playsinline muted loop></video>
-      <audio id="bgm" src="./music.mp3" preload="auto" crossorigin="anonymous"></audio>
     </a-assets>
 
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
@@ -67,7 +66,6 @@
     const overlay = document.getElementById('overlay');
     const startBtn = document.getElementById('startBtn');
   const videos = [document.getElementById('video')];
-    const bgm = document.getElementById('bgm');
 
     function unmuteAndPrime(mediaEl) {
       if (!mediaEl) return;
@@ -83,15 +81,9 @@
       } catch (e) {}
     }
 
-    startBtn.addEventListener('click', async () => {
+  startBtn.addEventListener('click', async () => {
       overlay.style.display = 'none';
       videos.forEach(unmuteAndPrime);
-      try {
-        if (bgm) {
-          bgm.volume = 0.35;
-          await bgm.play().catch(() => {});
-        }
-      } catch(e) {}
     });
 
     AFRAME.registerComponent('video-controller', {

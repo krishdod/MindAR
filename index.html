@@ -16,6 +16,8 @@
         padding: 12px 18px; border-radius: 10px; cursor: pointer; font-size: 16px;
       }
       .hint { position: fixed; left: 12px; bottom: 12px; color: #fff; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; opacity: .85; }
+      /* Force-hide any VR UI if the browser injects it */
+      a-enter-vr { display: none !important; }
     </style>
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
@@ -33,6 +35,7 @@
       mindar-image="imageTargetSrc: ./target.mind; uiError:no; uiLoading:no; uiScanning: yes"
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: true"
+      xr="enabled: false"
       embedded
       renderer="colorManagement: true, physicallyCorrectLights: true"
     >
